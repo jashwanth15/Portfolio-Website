@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects & Case Studies (All 9) — Jashwanth Lavudya Portfolio</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --accent: #ff542d;
+      --accent-hover: #ff6b48;
+      --text-main: #ffffff;
+      --text-muted: #d4d4d8;
+    }
+
+    html, body {
+      background: #000;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* ── Preloader ───────────────────────────────────────── */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      transition: opacity 0.6s ease;
+    }
+    #loading.hide { opacity: 0; pointer-events: none; }
+    #load-pct {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .bar-track { width: 220px; height: 2px; background: #222; border-radius: 2px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.08s linear; }
+
+    /* ── Fixed Scroll Canvas Background ─────────────────── */
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      transform: translateZ(0);
+      will-change: transform;
+    }
+
+    /* ── Main Content Layer ─────────────────────────────── */
+    #content-layer {
+      position: relative;
+      z-index: 10;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .tag-badge {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.85);
+    }
+
+    /* ── Navbar ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 24px 0;
+      background: transparent;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-decoration: none;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .btn-touch {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      color: #000000;
+      padding: 10px 10px 10px 20px;
+      border-radius: 99px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .btn-touch:hover {
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(255,84,45,0.4);
+    }
+    .btn-touch .arrow-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: transform 0.3s ease;
+    }
+    .btn-touch:hover .arrow-icon {
+      transform: rotate(45deg);
+    }
+
+    /* ── Section 1: Hero Header ────────────────────────── */
+    .projects-hero {
+      padding-top: 170px;
+      padding-bottom: 60px;
+    }
+
+    .projects-hero h1 {
+      font-size: clamp(48px, 6.5vw, 84px);
+      font-weight: 900;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 24px;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.9);
+    }
+
+    .projects-hero p {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 760px;
+      margin-bottom: 40px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(12px);
+      color: #ffffff;
+      padding: 10px 22px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 20px rgba(255, 84, 45, 0.4);
+    }
+
+    /* ── Section 2: Projects Showcase Grid ──────────────── */
+    .section-grid {
+      padding-bottom: 120px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .project-card {
+      background: transparent;
+      border-radius: 28px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .project-img-wrap {
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      background: transparent;
+    }
+
+    .project-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .project-card:hover .project-img-wrap img {
+      transform: scale(1.08);
+    }
+
+    .project-info {
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .project-tag {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+
+    .project-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .project-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.85);
+    }
+
+    .card-links-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-link-badge {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 99px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .card-link-badge:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .card-link-badge.live-badge {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── Section 3: Academic & Performance Metrics ──────── */
+    .section-impact {
+      padding: 100px 0;
+    }
+
+    .impact-header {
+      margin-bottom: 60px;
+    }
+
+    .impact-header h2 {
+      font-size: clamp(34px, 4.5vw, 54px);
+      font-weight: 900;
+      line-height: 1.1;
+      color: #ffffff;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.9);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .metric-card {
+      background: transparent;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .metric-number {
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+    }
+
+    .metric-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.4;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.85);
+    }
+
+    /* ── Section 4: Work Experience & Research Track ──────────── */
+    .section-process {
+      padding: 120px 0;
+    }
+
+    .process-header {
+      margin-bottom: 60px;
+    }
+
+    .process-header h2 {
+      font-size: clamp(34px, 4.5vw, 54px);
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.9);
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .process-card {
+      background: transparent;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .process-step {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+
+    .process-card h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.85);
+    }
+
+    .process-card p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.85);
+    }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    footer {
+      padding: 80px 0 40px 0;
+    }
+
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .footer-brand {
+      font-size: 28px;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .btn-orange {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: #fff;
+      padding: 12px 12px 12px 24px;
+      border-radius: 99px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(255, 84, 45, 0.5);
+    }
+    .btn-orange:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding-top: 30px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+
+    .footer-socials {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .footer-socials a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-socials a:hover {
+      color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .projects-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .projects-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .footer-top { flex-direction: column; align-items: flex-start; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Bar -->
+  <div id="loading">
+    <div id="load-pct">Loading 0%</div>
+    <div class="bar-track"><div class="bar-fill" id="bar-fill"></div></div>
+  </div>
+
+  <!-- Background Scroll Animation Canvas -->
+  <div id="canvas-container">
+    <canvas id="hero-canvas"></canvas>
+  </div>
+
+  <!-- Foreground Sections Layer -->
+  <div id="content-layer">
+
+    <!-- Navbar -->
+    <nav>
+      <div class="container nav-inner">
+        <a href="index.html" class="logo">Jashwanth Lavudya</a>
+        <ul class="nav-links">
+          <li><a href="/#hero">Home</a></li>
+          <li><a href="/#projects">Projects</a></li>
+          <li><a href="/#experience">Experience</a></li>
+          <li><a href="/#edu">Education</a></li>
+          <li><a href="/#skills">Skills</a></li>
+          <li><a href="/#contact">Contact</a></li>
+        </ul>
+        <a href="/#contact" class="btn-touch">
+          Get in touch
+          <span class="arrow-icon">➔</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <!-- Section 1: Hero Header -->
+      <header class="projects-hero">
+        <div class="tag-badge">● FEATURED PROJECTS</div>
+        <h1>Engineering AI &<br>Enterprise Systems</h1>
+        <p>A showcase of production software built with Python, React, Node.js, and FastMCP — spanning autonomous AI agents, persistent queues, and healthcare analytics.</p>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">All 7 Projects</button>
+          <button class="filter-btn" data-filter="ai">AI & FastMCP</button>
+          <button class="filter-btn" data-filter="systems">Systems & CLI</button>
+          <button class="filter-btn" data-filter="mern">Full-Stack MERN</button>
+          <button class="filter-btn" data-filter="data">Data Science & NLP</button>
+        </div>
+      </header>
+
+      <!-- Section 2: Projects Showcase Grid -->
+      <section class="section-grid">
+        <div class="projects-grid">
+
+          <!-- Project 1: DataPilot AI -->
+          <div class="project-card" data-category="ai">
+            <div class="project-img-wrap">
+              <img src="/card_datapilot.png" alt="DataPilot AI">
+            </div>
+            <div class="project-info">
+              <span class="project-tag">Python • FastAPI • LLM (Groq) • FastMCP • Vercel</span>
+              <h3 class="project-title">DataPilot AI ⭐</h3>
+              <p class="project-desc">Production AI analyst platform — users upload any dataset, ask questions in natural language, and the system automatically executes Pandas analysis in real time.</p>
+              <div class="card-links-row">
+                <a href="https://data-pilot-1n1t.vercel.app/" target="_blank" class="card-link-badge live-badge">⚡ Live App</a>
+                <a href="https://github.com/jashwanth15/Datapilot" target="_blank" class="card-link-badge">GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 2: MedFlow Healthcare Portal -->
+          <div class="project-card" data-category="mern">
+            <div class="project-img-wrap">
+              <img src="/card_medflow.png" alt="MedFlow Portal">
+            </div>
+            <div class="project-info">
+              <span class="project-tag">React.js • Node.js • Express • MongoDB • JWT</span>
+              <h3 class="project-title">MedFlow Healthcare Portal ⭐</h3>
+              <p class="project-desc">Full-stack MERN healthcare platform featuring an integrated Symptom Analyzer for health assessment, 4 role-based portals (Patient, Doctor, Pharmacist, Admin) & 10+ REST API modules for token and prescription tracking.</p>
+              <div class="card-links-row">
+                <a href="https://med-flow-blush-five.vercel.app/" target="_blank" class="card-link-badge live-badge">⚡ Live App</a>
+                <a href="https://github.com/hameedshaik2345/MedFlow" target="_blank" class="card-link-badge">GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 3: QueueCTL -->
+          <div class="project-card" data-category="systems">
+            <div class="project-img-wrap">
+              <img src="/card_queuectl.png" alt="QueueCTL CLI">
+            </div>
+            <div class="project-info">
+              <span class="project-tag">Python • SQLite (WAL mode) • Concurrency • argparse</span>
+              <h3 class="project-title">QueueCTL — CLI Job Queue ⭐</h3>
+              <p class="project-desc">Persistent CLI background job queue system with atomic job claiming via BEGIN IMMEDIATE transactions — zero external dependencies.</p>
+              <div class="card-links-row">
+                <a href="https://github.com/jashwanth15/QueueCTL" target="_blank" class="card-link-badge">GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 4: Tender Management System -->
+          <div class="project-card" data-category="mern">
+            <div class="project-img-wrap">
+              <img src="/card_tender.png" alt="Tender Management System">
+            </div>
+            <div class="project-info">
+              <span class="project-tag">React.js • Node.js • Express • MongoDB • JWT</span>
+              <h3 class="project-title">Tender Management Platform</h3>
+              <p class="project-desc">Enterprise MERN platform for automated tender creation, vendor bidding, and multi-role evaluation (Admins, Vendors, Evaluators) with 28% lower API latency via MongoDB aggregation optimization.</p>
+              <div class="card-links-row">
+                <a href="https://github.com/jashwanth15/tender-management-project" target="_blank" class="card-link-badge">GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 5: Hotel Guest Sentiment Analyzer -->
+          <div class="project-card" data-category="data">
+            <div class="project-img-wrap">
+              <img src="/card_sentiment.png" alt="Hotel Sentiment NLP">
+            </div>
+            <div class="project-info">
+              <span class="project-tag">Python • TextBlob • VADER • NLP • Pandas</span>
+              <h3 class="project-title">Hotel Sentiment Analyzer</h3>
+              <p class="project-desc">Automated NLP analytics system that ingests and classifies 20,000+ guest reviews, performing text preprocessing and comparative sentiment analysis using TextBlob and VADER algorithms.</p>
+              <div class="card-links-row">
+                <a href="https://github.com/jashwanth15/GenAIus-Hotel_Guest_Analyzer_NLP-Sentiment-Analysis" target="_blank" class="card-link-badge">GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 6: RSU Prediction VANET -->
+          <div class="project-card" data-category="data ai">
+            <div class="project-img-wrap">
+              <img src="/card_vanet.png" alt="Vehicle Mobility Deep Learning">
+            </div>
+            <div class="project-info">
+              <span class="project-tag">Python • LSTM • GRU • NumPy • Scikit-learn</span>
+              <h3 class="project-title">VANET Vehicle Mobility Model</h3>
+              <p class="project-desc">Python ETL pipeline transforming large-scale VANET mobility time-series datasets into LSTM & GRU predictive models with 92% test accuracy.</p>
+              <div class="card-links-row">
+                <a href="https://github.com/jashwanth15/RSU_Prediction_Project" target="_blank" class="card-link-badge">GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 7: Retail Sales Forecasting -->
+          <div class="project-card" data-category="data">
+            <div class="project-img-wrap">
+              <img src="/card_forecasting.png" alt="Retail Sales Forecasting">
+            </div>
+            <div class="project-info">
+              <span class="project-tag">Python • ARIMA • SARIMA • Pandas • Time Series</span>
+              <h3 class="project-title">Retail Sales Forecasting</h3>
+              <p class="project-desc">Statistical time series forecasting on retail sales data using ARIMA/SARIMA — identifying trends, seasonality, and demand cycles.</p>
+              <div class="card-links-row">
+                <a href="https://github.com/jashwanth15/Retail-Sales-Forecasting-using-Time-Series-Analysis" target="_blank" class="card-link-badge">GitHub Repo</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Section 3: Academic & Performance Metrics -->
+      <section class="section-impact">
+        <div class="impact-header">
+          <div class="tag-badge">● ACADEMIC & PERFORMANCE METRICS</div>
+          <h2>Proven Excellence Across Academics & AI Systems</h2>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-number">92%</div>
+            <div class="metric-label">Prediction Accuracy on VANET Deep Learning Time-Series Test Data</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-number">20,000+</div>
+            <div class="metric-label">Hotel Guest Reviews Processed & Classified via NLP Pipeline</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-number">8.04 / 10</div>
+            <div class="metric-label">Ongoing B.Tech CGPA @ SRM University AP (Big Data Analytics)</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-number">100%</div>
+            <div class="metric-label">SSC GPA (Class X 10/10) & 97.7% Intermediate MPC Record</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Work Experience & Research Track -->
+      <section class="section-process">
+        <div class="process-header">
+          <div class="tag-badge">● WORK EXPERIENCE & INTERNSHIPS</div>
+          <h2>Hands-On Research & Industrial AI Experience</h2>
+        </div>
+
+        <div class="process-grid">
+          <div class="process-card">
+            <span class="process-step">JUN 2025 – OCT 2025</span>
+            <h3>AI & Data Analyst Intern</h3>
+            <p><strong>SmartInternz</strong> — Built automated Python analytics pipeline classifying 20,000+ hotel reviews without manual effort. Evaluated TextBlob vs. VADER NLP models via quantitative benchmarking.</p>
+          </div>
+
+          <div class="process-card">
+            <span class="process-step">JUN 2025 – AUG 2025</span>
+            <h3>Full Stack Intern</h3>
+            <p><strong>Edunet Foundation (IBM SkillsBuild)</strong> — Architected multi-role enterprise Tender Management Platform (MERN stack). Optimized MongoDB pipelines achieving a 28% reduction in server response time.</p>
+          </div>
+
+          <div class="process-card">
+            <span class="process-step">JUN 2025 – AUG 2025</span>
+            <h3>Research Intern</h3>
+            <p><strong>SRM University AP</strong> — Engineered Python ETL pipeline to extract & normalize large-scale VANET mobility datasets. Trained LSTM & GRU models achieving 92% prediction accuracy on test data.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Footer -->
+      <footer>
+        <div class="footer-top">
+          <div class="footer-brand">
+            Jashwanth Lavudya
+            <p>B.Tech Computer Science & Engineering | Big Data Analytics @ SRM University AP</p>
+          </div>
+
+          <a href="index.html#contact" class="btn-orange">
+            Get In Touch
+            <span class="arrow-icon">➔</span>
+          </a>
+        </div>
+
+        <div class="footer-bottom">
+          <div>© 2026 Jashwanth Lavudya. All rights reserved.</div>
+          <div class="footer-socials">
+            <a href="https://github.com/jashwanth15" target="_blank">GitHub</a>
+            <a href="https://www.linkedin.com/in/jashwanth-l-228a67291/" target="_blank">LinkedIn</a>
+            <a href="https://leetcode.com/u/6q3jAuwZ3E/" target="_blank">LeetCode</a>
+            <a href="mailto:jashwanth_lavudya@srmap.edu.in">Email</a>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- /.container -->
+
+  </div><!-- /#content-layer -->
+
+  <script>
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d', { alpha: false });
+    const loading = document.getElementById('loading');
+    const barFill = document.getElementById('bar-fill');
+    const loadPct = document.getElementById('load-pct');
+
+    const TOTAL_FRAMES = 240;
+    const images = new Array(TOTAL_FRAMES);
+
+    let targetFrameIndex = 0;
+    let currentFrameIndex = 0;
+    let isTicking = false;
+
+    function handleProgress() {
+      loadedCount++;
+      const pct = Math.round((loadedCount / TOTAL_FRAMES) * 100);
+      barFill.style.width = pct + '%';
+      loadPct.textContent = `Loading ${pct}%`;
+
+      if (loadedCount === 1) {
+        resizeCanvas();
+      }
+
+      if (loadedCount >= TOTAL_FRAMES) {
+        loading.classList.add('hide');
+        setTimeout(() => loading.style.display = 'none', 400);
+        resizeCanvas();
+      }
+    }
+
+    function framePath(n) {
+      return `/hd_frames/frame_${String(n).padStart(3, '0')}.webp`;
+    }
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(window.innerWidth * dpr);
+      canvas.height = Math.round(window.innerHeight * dpr);
+      renderFrame(Math.round(currentFrameIndex));
+    }
+
+    function renderFrame(index) {
+      const img = images[index];
+      if (!img || !img.complete || img.naturalWidth === 0) return;
+
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+
+      // Cover-fill calculation
+      const scale = Math.max(cw / iw, ch / ih);
+      const sw = iw * scale;
+      const sh = ih * scale;
+      const sx = (cw - sw) / 2;
+      const sy = (ch - sh) / 2;
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'medium';
+      ctx.drawImage(img, sx, sy, sw, sh);
+    }
+
+    function update() {
+      // Smooth interpolation for 60fps scroll binding
+      currentFrameIndex += (targetFrameIndex - currentFrameIndex) * 0.5;
+      const frameToDraw = Math.min(Math.max(Math.round(currentFrameIndex), 0), TOTAL_FRAMES - 1);
+      renderFrame(frameToDraw);
+
+      if (Math.abs(targetFrameIndex - currentFrameIndex) > 0.05) {
+        requestAnimationFrame(update);
+      } else {
+        isTicking = false;
+      }
+    }
+
+    function onScroll() {
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
+      targetFrameIndex = progress * (TOTAL_FRAMES - 1);
+
+      if (!isTicking) {
+        isTicking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Preload frames
+    let loadedCount = 0;
+    async function preloadAll() {
+      for (let i = 0; i < TOTAL_FRAMES; i++) {
+        const img = new Image();
+        img.onload = handleProgress;
+        img.onerror = handleProgress;
+        img.src = framePath(i + 1);
+        images[i] = img;
+      }
+    }
+
+    resizeCanvas();
+    preloadAll();
+
+    // Category Filtering Logic
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+
+        projectCards.forEach(card => {
+          const category = card.getAttribute('data-category');
+          if (filter === 'all' || (category && category.includes(filter))) {
+            card.style.display = 'flex';
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, 10);
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 200);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
